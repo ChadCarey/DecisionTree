@@ -5,7 +5,9 @@
  */
 package decisiontree;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +26,7 @@ public class DecisionTree {
      */
     public static void main(String[] args) {
         DecisionTree dTree = new DecisionTree();
-        dTree.runLenseSet();
+        dTree.run();
     }
 
     private DataSet buildSet(String filename) {
@@ -46,7 +48,7 @@ public class DecisionTree {
         testingSet = trainingSet.removePercent(30);
         // build tree
         ID3Tree tree = new ID3Tree(trainingSet);
-        System.out.println("\n\n");
+        print("\n\n");
         tree.printTree();
         
         // test tree
@@ -59,7 +61,7 @@ public class DecisionTree {
         testingSet = trainingSet.removePercent(30);
         // build tree
         ID3Tree tree = new ID3Tree(trainingSet);
-        System.out.println("\n\n");
+        print("\n\n");
         tree.printTree();
         
         // test tree
@@ -68,6 +70,17 @@ public class DecisionTree {
     
     private void runVoteSet() {
         //dTree.run("house-votes-84.csv");
+            
+        trainingSet = buildSet("house-votes-84.csv");
+        trainingSet.setTarget("Class Name");
+        testingSet = trainingSet.removePercent(30);
+        // build tree
+        ID3Tree tree = new ID3Tree(trainingSet);
+        System.out.println("\n\n");
+        tree.printTree();
+        
+        // test tree
+        evaluate(tree, testingSet);
     }
     
     private void runAll() {
@@ -77,7 +90,7 @@ public class DecisionTree {
     }
 
     private void evaluate(ID3Tree tree, DataSet testingSet) {
-        System.out.println("\n\nEvaluating");
+        print("\n\nEvaluating");
         double correct = 0;
         double total = 0;
         Iterator<DataPoint> iter = testingSet.iterator();
@@ -85,14 +98,64 @@ public class DecisionTree {
             DataPoint p = iter.next();
             String actualClass = p.getTargetValue();
             String testClass = tree.classify(p);
-            System.out.println(actualClass + " : " + testClass);
+            print(actualClass + " : " + testClass);
             if(actualClass.equals(testClass)) {
                 correct++;
             } 
             total++;
         }
         
-        System.out.println("accuracy: " + (correct/total)*100 + "%");
+        print("accuracy: " + (correct/total)*100 + "%");
+    }
+    
+    private void print(String message) {
+        System.out.println(message);
+    }
+    
+    private int getInput() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int value = -1;
+        try{
+            value = Integer.parseInt(br.readLine());
+        }catch(NumberFormatException nfe){
+            System.err.println("Invalid Format!");
+        } catch (IOException ex) {
+            Logger.getLogger(DecisionTree.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return value;
+    }
+
+    private void run() {
+        boolean done = false;
+        while(!done) {
+            print("Choose an option");
+            displayOptions();
+            int option = getInput();
+            switch(option) {
+                case 0:
+                    done = true;
+                    break;
+                case 1:
+                    this.runIrisSet();
+                    break;
+                case 2:
+                    this.runLenseSet();
+                    break;
+                case 3:
+                    this.runVoteSet();
+                    break;
+                default:
+                    print("Invalid input");
+            }
+        }
+        
+    }
+
+    private void displayOptions() {
+        print("\t0. exit");
+        print("\t1. run Iris data");
+        print("\t2. run lense data");
+        print("\t3. run voteing data");
     }
     
 }
