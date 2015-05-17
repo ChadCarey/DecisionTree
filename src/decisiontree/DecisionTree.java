@@ -98,7 +98,7 @@ public class DecisionTree {
             DataPoint p = iter.next();
             String actualClass = p.getTargetValue();
             String testClass = tree.classify(p);
-            print(actualClass + " : " + testClass);
+            //print(actualClass + " : " + testClass);
             if(actualClass.equals(testClass)) {
                 correct++;
             } 

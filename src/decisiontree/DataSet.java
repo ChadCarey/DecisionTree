@@ -317,7 +317,7 @@ public class DataSet extends ArrayList<DataPoint> {
                 maxVal = value;
             }
         }
-        System.out.println(this.getClass().getName() + ":: " + maxVal);
+        
         return maxVal;
     }
     

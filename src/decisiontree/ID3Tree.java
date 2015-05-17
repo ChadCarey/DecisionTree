@@ -22,43 +22,43 @@ import java.util.logging.Logger;
 public class ID3Tree {
     
     private HashMap<String, ID3Tree> branches;
-    private String rootName;
+    private String nodeName;
     
     ID3Tree(DataSet set) {
         // init membre variables
         branches = new HashMap<String, ID3Tree>();
         if(set.getAttributeCount() > 0 && set.size() > 0) {
             // get the lowest entropy attribute
-            rootName = this.getRootAttribute(set);
-            System.out.println(this.getClass().getName() + ":: rootName == " +rootName + "\n");
+            nodeName = this.getRootAttribute(set);
+            System.out.println(this.getClass().getName() + ":: nodeName == " +nodeName + "\n");
 
             // get the names of the attribute values
-            Set<String> attributeValues = set.getAttributeValues(rootName);
+            Set<String> attributeValues = set.getAttributeValues(nodeName);
             Iterator<String> valueIter = attributeValues.iterator();
             while(valueIter.hasNext()) {
                 String value = valueIter.next();
-                DataSet nextSet = set.getSetWhere(rootName, value);
+                DataSet nextSet = set.getSetWhere(nodeName, value);
                 if(!nextSet.isEmpty()) {
                     branches.put(value, new ID3Tree(nextSet));
                 } else {
                     // leaf
-                    this.rootName = set.getMaxTarget();
+                    this.nodeName = set.getMaxTarget();
                 }
             }
         } 
         
         // all attributes have been accounted for. save the average target value
         if(branches.isEmpty()) {
-            rootName = set.getMaxTarget();
+            nodeName = set.getMaxTarget();
             System.out.println(this.getClass().getName() + ":: Leaf node found");
-            System.out.println(this.getClass().getName() + ":: Root name == " + rootName + "\n");
+            System.out.println(this.getClass().getName() + ":: nodeName == " + nodeName + "\n");
         
         }
     }
     
     private ID3Tree(String rootValue) {
         branches = new HashMap<String, ID3Tree>();
-        this.rootName = rootValue;
+        this.nodeName = rootValue;
     }
     
     /**
@@ -69,18 +69,18 @@ public class ID3Tree {
     public double calculateEntropy(ArrayList<Integer> optionCounts) {
         // get the total
         int totalCount = 0;
-        System.out.println(this.getClass().getName() + ":: optionaCounts.len: " + optionCounts.size());
+        //System.out.println(this.getClass().getName() + ":: optionaCounts.len: " + optionCounts.size());
         for(int i = 0; i < optionCounts.size(); ++i) {
             totalCount += optionCounts.get(i);
         }
-        System.out.println(this.getClass().getName() + ":: totalCount: " + totalCount);
+        //System.out.println(this.getClass().getName() + ":: totalCount: " + totalCount);
         
         // calculate the entropy
         double entropy = 0;
         for (int i = 0; i < optionCounts.size(); ++i) {
             double optionCount = optionCounts.get(i);
             entropy = entropy -((optionCount/totalCount) * log2(optionCount/totalCount));
-            System.out.println(this.getClass().getName() + ":: cal ent: " + entropy);
+            //System.out.println(this.getClass().getName() + ":: cal ent: " + entropy);
         }
         return entropy;
     }
@@ -98,7 +98,7 @@ public class ID3Tree {
         
         // get a set with for each value of this attribute
         Set<String> attributeValues = set.getAttributeValues(attributeName);
-        System.out.println(this.getClass().getName() + ":: at values\n\t"+ attributeValues);
+            // System.out.println(this.getClass().getName() + ":: at values\n\t"+ attributeValues);
         // itterate through each attributeValue
         Iterator<String> atValIter = attributeValues.iterator();
         while(atValIter.hasNext()) {
@@ -118,7 +118,7 @@ public class ID3Tree {
                 DataPoint p = iter.next();
                 // if the current dataPoint has the searched for attribute value
                 if(p.get(attributeName) == atVal) {
-                    System.out.println(this.getClass().getName() + ":: ent point: " + p);
+                        //System.out.println(this.getClass().getName() + ":: ent point: " + p);
                     // we found a DataPoint with the serched for attribute value
                     // increment counter
                     atValueCount++;
@@ -128,22 +128,22 @@ public class ID3Tree {
                     
                     // count the occurances of each target for searched for dataPoints
                     int temp = counter.count(tarVal);
-                    System.out.println(this.getClass().getName() + ":: current count for " 
-                            + attributeName + " : " + tarVal + " is " + temp);
+                        //System.out.println(this.getClass().getName() + ":: current count for " 
+                          //  + attributeName + " : " + tarVal + " is " + temp);
                 }
                 
             }
             // after occurances counting we calculate he weighted entropy for the current
             // attribute value. and app it to a running total weight
             ArrayList<Integer> counts = counter.getCounts();
-            System.out.println(this.getClass().getName() + ":: entropy calculations"
+            /*System.out.println(this.getClass().getName() + ":: entropy calculations"
             + "\n\tNumber of items counted: " + counts
             + "\n\tAttributes with this value: " + atValueCount
-            + "\n\tTotal DataPoints: " + totalDataPoints);
+            + "\n\tTotal DataPoints: " + totalDataPoints);*/
             entropy += this.calculateEntropy(counter.getCounts()) * atValueCount / totalDataPoints;
-            System.out.println("\tCurrent entropy: " + entropy);
+            //System.out.println("\tCurrent entropy: " + entropy);
         }
-        System.out.println(this.getClass().getName() + ":: entropy " + entropy);
+        //System.out.println(this.getClass().getName() + ":: entropy " + entropy);
         return entropy;
     }
     
@@ -192,7 +192,7 @@ public class ID3Tree {
      */
     public String classify(DataPoint point) {
         // get the attribute value for the point
-        String branchName = point.get(this.rootName);
+        String branchName = point.get(this.nodeName);
         // get the correct branch for the point DataPoint's value
         ID3Tree branch = branches.get(branchName);
         if(branch != null) {
@@ -209,7 +209,7 @@ public class ID3Tree {
             }
             return average(answers);
         } else {
-            return this.rootName;
+            return this.nodeName;
         }
     }
 
@@ -239,14 +239,14 @@ public class ID3Tree {
      */
     public void printTree() {
         // display
-//        System.out.println(this.rootName);
-        String outputText = this.rootName + "{ ";
+
+        String outputText = this.nodeName + "{ ";
         Set<String> kSet = this.branches.keySet();
         Iterator<String> iter = kSet.iterator();
         while(iter.hasNext()) {
             String branchName = iter.next();
             ID3Tree nextTree = branches.get(branchName);
-            outputText += nextTree.rootName + "\t";
+            outputText += nextTree.nodeName + "\t";
             nextTree.printTree();
         }
         System.out.println(outputText + " }");

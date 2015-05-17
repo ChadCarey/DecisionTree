@@ -35,7 +35,6 @@ public class AttributeCounter {
         } else {
             value += 1;
         }
-        //System.out.println("counting " + attribute + ": " + value);
         counts.put(attribute, value);
         return value;
     }

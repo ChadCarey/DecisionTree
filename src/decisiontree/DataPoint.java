@@ -31,7 +31,7 @@ public class DataPoint extends HashMap<String, String> {
             System.err.println(this.getClass().getName() + "line was empty");
             System.exit(7);
         }
-        //System.out.println(this.getClass().getName() + ":: " + line);
+        
         String[] items = line.split(",");
         generateMissingKeys(keys, items.length);
         if(keys.size() != items.length){
@@ -41,8 +41,6 @@ public class DataPoint extends HashMap<String, String> {
         
         // add each item to the map
         for(int i = 0; i < items.length; ++i) {
-            //System.out.println(this.getClass().getName() + ":: adding " 
-            //        + keys.get(i) + " : " + items[i] + "To data set");
             if(items[i] == null) {
                 throw new NullPointerException();
             }
@@ -143,7 +141,7 @@ public class DataPoint extends HashMap<String, String> {
         if(this.get(newTarget) != null && this.get(newTarget) != null) {
             this.target = newTarget;
         } else {
-            System.out.println(this.getClass().getName() + ":: target was invalid, not set");
+            //System.out.println(this.getClass().getName() + ":: target was invalid, not set");
         }
     }
 
@@ -180,7 +178,7 @@ public class DataPoint extends HashMap<String, String> {
         // if the removed key is the target, set the target to null
         if (target != null) {
             if (target.equals(key)) {
-                System.out.println(this.getClass().getName() + ":: removed taget");
+                //System.out.println(this.getClass().getName() + ":: removed taget");
                 target = null;
             }
         }
