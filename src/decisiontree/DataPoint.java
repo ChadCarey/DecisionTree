@@ -29,20 +29,20 @@ public class DataPoint extends HashMap<String, String> {
     public DataPoint(ArrayList<String> keys, String line) {
         if(line.isEmpty()) {
             System.err.println(this.getClass().getName() + "line was empty");
-            System.exit(4);
+            System.exit(7);
         }
         //System.out.println(this.getClass().getName() + ":: " + line);
         String[] items = line.split(",");
         generateMissingKeys(keys, items.length);
         if(keys.size() != items.length){
-            System.out.println(this.getClass().getName() + ":: invalid number of keys");
+            System.err.println(this.getClass().getName() + ":: invalid number of keys");
             System.exit(5);
         }
         
         // add each item to the map
         for(int i = 0; i < items.length; ++i) {
-            System.out.println(this.getClass().getName() + ":: adding " 
-                    + keys.get(i) + " : " + items[i] + "To data set");
+            //System.out.println(this.getClass().getName() + ":: adding " 
+            //        + keys.get(i) + " : " + items[i] + "To data set");
             if(items[i] == null) {
                 throw new NullPointerException();
             }
@@ -68,7 +68,13 @@ public class DataPoint extends HashMap<String, String> {
      * @param p 
      */
     public DataPoint(DataPoint p) {
-        this.putAll(p);
+        // add all points
+        Set<String> keys = p.keySet();
+        Iterator<String> iter = keys.iterator();
+        while(iter.hasNext()) {
+            String key = iter.next();
+            this.put(key, p.get(key));
+        }
         // ensure target is set
         String tempTarget = p.getTarget();
         if(tempTarget == null)

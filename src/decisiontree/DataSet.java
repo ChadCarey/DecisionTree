@@ -85,24 +85,26 @@ public class DataSet extends ArrayList<DataPoint> {
         while(pointIter.hasNext()) {
             DataPoint p = pointIter.next();
             String attributeValue = p.get(attributeName);
-            if(attributeValue == null) {
+            if(attributeValue != null) {
+                //System.exit(3);
+
+                DataPoint newPoint = new DataPoint(attributeName, attributeValue);
+                String target = p.getTarget();
+                if(target == null) {
+                    throw new NullPointerException();
+                }
+
+                String targetValue = p.getTargetValue();
+                if(targetValue == null) {
+                    throw new NullPointerException();
+                }
+
+                newPoint.put(target, targetValue);
+                newPoint.setTarget(target);
+                set.add(newPoint);
+            } else {
                 System.err.println(this.getClass().getName() + "attVal was null");
-                System.exit(3);
             }
-            DataPoint newPoint = new DataPoint(attributeName, attributeValue);
-            String target = p.getTarget();
-            if(target == null) {
-                throw new NullPointerException();
-            }
-            
-            String targetValue = p.getTargetValue();
-            if(targetValue == null) {
-                throw new NullPointerException();
-            }
-            
-            newPoint.put(target, targetValue);
-            newPoint.setTarget(target);
-            set.add(newPoint);
         }
         return set;
     }
@@ -211,11 +213,11 @@ public class DataSet extends ArrayList<DataPoint> {
         while(iter.hasNext()) {
             DataPoint p = iter.next();
             String atVal = p.get(attribute);
-            if(atVal == null) {
-                System.err.println(this.getClass().getName() + ":: atVal was null");
-                System.exit(4);
+            if(atVal != null) {
+              //  System.err.println(this.getClass().getName() + ":: atVal was null\n" + this);
+            //} else {
+                set.add(atVal);    
             }
-            set.add(atVal);    
         }
         return set;
     }
@@ -261,14 +263,15 @@ public class DataSet extends ArrayList<DataPoint> {
             if(p.getTargetValue() == null)
                 throw new NullPointerException();
             String attributeVal = p.get(attribute);
-            if(attributeVal != null) {
+            if(attributeVal == null) {
+                throw new NullPointerException();
+            }
                 // if the attributeVal is the value create a new point and add it
-                if(attributeVal.equals(value)) {
-                    DataPoint newPoint = new DataPoint(p);
-                    // since this attibute now is of only this value, remove the column
-                    newPoint.remove(attribute);
-                    set.add(newPoint);
-                }
+            if(attributeVal.equals(value)) {
+                DataPoint newPoint = new DataPoint(p);
+                // since this attibute now is of only this value, remove the column
+                newPoint.remove(attribute);
+                set.add(newPoint);
             }
         }
         

@@ -69,18 +69,18 @@ public class ID3Tree {
     public double calculateEntropy(ArrayList<Integer> optionCounts) {
         // get the total
         int totalCount = 0;
-        System.out.println("optionaCounts.len: " + optionCounts.size());
+        System.out.println(this.getClass().getName() + ":: optionaCounts.len: " + optionCounts.size());
         for(int i = 0; i < optionCounts.size(); ++i) {
             totalCount += optionCounts.get(i);
         }
-        System.out.println("totalCount: " + totalCount);
+        System.out.println(this.getClass().getName() + ":: totalCount: " + totalCount);
         
         // calculate the entropy
         double entropy = 0;
         for (int i = 0; i < optionCounts.size(); ++i) {
             double optionCount = optionCounts.get(i);
             entropy = entropy -((optionCount/totalCount) * log2(optionCount/totalCount));
-            System.out.println("cal ent: " + entropy);
+            System.out.println(this.getClass().getName() + ":: cal ent: " + entropy);
         }
         return entropy;
     }
@@ -92,13 +92,13 @@ public class ID3Tree {
      * @return 
      */
     public double calculateEntropy(DataSet set, String attributeName) {
-        double entropy = 100;
+        double entropy = 0;
         // get the total number of datapoints
         double totalDataPoints = set.size();
         
         // get a set with for each value of this attribute
         Set<String> attributeValues = set.getAttributeValues(attributeName);
-        
+        System.out.println(this.getClass().getName() + ":: at values\n\t"+ attributeValues);
         // itterate through each attributeValue
         Iterator<String> atValIter = attributeValues.iterator();
         while(atValIter.hasNext()) {
@@ -116,33 +116,34 @@ public class ID3Tree {
             while(iter.hasNext()) {
                 // get a dataPoint
                 DataPoint p = iter.next();
-                try {
-                    if(p.get(attributeName) == atVal) {
-                        // we found a DataPoint with the serched for attribute value
-                        atValueCount++;
-                        // get the associated target value for this data point
-                        String tarVal = p.getTargetValue();
-                        if(tarVal == null)
-                            throw new NullPointerException();
-                        // count the occurances each targe value
-                        counter.count(tarVal);
-                    }
-                } catch (Exception ex) {
-                    Logger.getLogger(ID3Tree.class.getName()).log(Level.SEVERE, null, ex);
-                    System.exit(4);
+                // if the current dataPoint has the searched for attribute value
+                if(p.get(attributeName) == atVal) {
+                    System.out.println(this.getClass().getName() + ":: ent point: " + p);
+                    // we found a DataPoint with the serched for attribute value
+                    // increment counter
+                    atValueCount++;
+                    
+                    // get the associated target value for this data point
+                    String tarVal = p.getTargetValue();
+                    
+                    // count the occurances of each target for searched for dataPoints
+                    int temp = counter.count(tarVal);
+                    System.out.println(this.getClass().getName() + ":: current count for " 
+                            + attributeName + " : " + tarVal + " is " + temp);
                 }
+                
             }
             // after occurances counting we calculate he weighted entropy for the current
             // attribute value. and app it to a running total weight
+            ArrayList<Integer> counts = counter.getCounts();
+            System.out.println(this.getClass().getName() + ":: entropy calculations"
+            + "\n\tNumber of items counted: " + counts
+            + "\n\tAttributes with this value: " + atValueCount
+            + "\n\tTotal DataPoints: " + totalDataPoints);
             entropy += this.calculateEntropy(counter.getCounts()) * atValueCount / totalDataPoints;
+            System.out.println("\tCurrent entropy: " + entropy);
         }
-        /*Iterator<DataPoint> pointIter = set.iterator();
-        int totalDataPoints = set.size();
-        while(pointIter.hasNext()) {
-            DataPoint point = pointIter.next();
-            String attributeVal = point.get(attributeName);
-        }*/
-        
+        System.out.println(this.getClass().getName() + ":: entropy " + entropy);
         return entropy;
     }
     

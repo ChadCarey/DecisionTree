@@ -50,18 +50,22 @@ public class DecisionTree {
     }
 
     private void evaluate(ID3Tree tree, DataSet testingSet) {
+        System.out.println("\n\nEvaluating");
         double correct = 0;
         double total = 0;
         Iterator<DataPoint> iter = testingSet.iterator();
         while(iter.hasNext()) {
             DataPoint p = iter.next();
-            if(p.getTargetValue() == tree.classify(p)) {
+            String actualClass = p.getTargetValue();
+            String testClass = tree.classify(p);
+            System.out.println(actualClass + " : " + testClass);
+            if(actualClass.equals(testClass)) {
                 correct++;
             } 
             total++;
         }
         
-        System.out.println("accuracy: " + correct/total);
+        System.out.println("accuracy: " + (correct/total)*100 + "%");
     }
     
 }

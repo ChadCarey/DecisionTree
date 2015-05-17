@@ -26,7 +26,8 @@ public class AttributeCounter {
      */
     public int count(String attribute) throws NullPointerException {
         if(attribute == null) {
-            throw new NullPointerException();
+            System.err.println(this.getClass().getName() + ":: attribute was null");
+            return 0;
         }
         Integer value = counts.get(attribute);
         if(value == null) {
