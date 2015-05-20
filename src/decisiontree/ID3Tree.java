@@ -5,6 +5,8 @@
  */
 package decisiontree;
 
+import DataSet.DataPoint;
+import DataSet.DataSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -240,13 +242,13 @@ public class ID3Tree {
     public void printTree() {
         // display
 
-        String outputText = this.nodeName + "{ ";
+        String outputText = this.nodeName + "-" + this.hashCode() + "{ ";
         Set<String> kSet = this.branches.keySet();
         Iterator<String> iter = kSet.iterator();
         while(iter.hasNext()) {
             String branchName = iter.next();
             ID3Tree nextTree = branches.get(branchName);
-            outputText += nextTree.nodeName + "\t";
+            outputText += nextTree.nodeName +  "-" + nextTree.hashCode() + "\t";
             nextTree.printTree();
         }
         System.out.println(outputText + " }");

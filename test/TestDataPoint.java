@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-import decisiontree.DataPoint;
+import DataSet.DataPoint;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;

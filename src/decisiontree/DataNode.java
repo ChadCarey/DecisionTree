@@ -1,5 +1,7 @@
 package decisiontree;
 
+import DataSet.DataPoint;
+import DataSet.DataSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

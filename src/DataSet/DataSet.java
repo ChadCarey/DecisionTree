@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package decisiontree;
+package DataSet;
 
+import decisiontree.AttributeCounter;
+import decisiontree.UtilityBelt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -33,7 +35,7 @@ public class DataSet extends ArrayList<DataPoint> {
      * builds a DataSet from a csv file
      * @param filename 
      */
-    DataSet(String filename) throws IOException {
+    public DataSet(String filename) throws IOException {
         super();
         BufferedReader reader = UtilityBelt.getFileReader(filename);
         // get the header
@@ -303,7 +305,7 @@ public class DataSet extends ArrayList<DataPoint> {
      * returns the maximum occurring target value
      * @return 
      */
-    String getMaxTarget() {
+    public String getMaxTarget() {
 
         Iterator<DataPoint> valueIter = this.iterator();
         AttributeCounter counter = new AttributeCounter();

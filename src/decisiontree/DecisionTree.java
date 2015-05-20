@@ -5,6 +5,8 @@
  */
 package decisiontree;
 
+import DataSet.DataPoint;
+import DataSet.DataSet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
